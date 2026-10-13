@@ -10,6 +10,8 @@ jobs:
     # workflow_run always runs against the base branch, so GITHUB_TOKEN is privileged here even for fork PRs.
     if: github.event.workflow_run.conclusion == 'failure'
     permissions:
+      actions: read
+      contents: read
       pull-requests: write
     steps:
       - name: Download validation results
@@ -41,13 +43,21 @@ jobs:
 
             // The artifact was built by the PR's own job, so its pr_number.txt is attacker-controlled.
             // Look up the real PR from the trusted workflow_run head SHA instead of trusting the file.
-            const { data: prs } = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+            // Fork PRs aren't returned by commit lookup or workflow_run.pull_requests, so match by head branch + SHA.
+            const run = context.payload.workflow_run;
+            const { data: prs } = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              commit_sha: context.payload.workflow_run.head_sha,
+              state: 'open',
+              head: `${run.head_repository.owner.login}:${run.head_branch}`,
+              per_page: 100,
             });
-            const prNumber = prs.length > 0 ? prs[0].number : null;
-            if (!prNumber || !Number.isInteger(prNumber)) return;
+            const pr = prs.find(p => p.head.sha === run.head_sha);
+            if (!pr) {
+              core.warning(`No open PR found for ${run.head_repository.full_name}@${run.head_sha}`);
+              return;
+            }
+            const prNumber = pr.number;
 
             const sections = [];
 
@@ -71,7 +81,7 @@ jobs:
 
             if (sections.length === 0) return;
 
-            github.rest.issues.createComment({
+            await github.rest.issues.createComment({
               issue_number: prNumber,
               owner: context.repo.owner,
               repo: context.repo.repo,

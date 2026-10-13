@@ -26,8 +26,10 @@ function validateWidgets() {
     process.exit(1);
   }
 
+  // Optional widget names as args limit validation to those (e.g. ones changed in a PR).
+  const only = new Set(process.argv.slice(2));
   const entries = fs.readdirSync(widgetsDir, { withFileTypes: true })
-    .filter(e => e.isDirectory());
+    .filter(e => e.isDirectory() && (only.size === 0 || only.has(e.name)));
 
   if (entries.length === 0) {
     console.log('No widgets found, nothing to validate.');

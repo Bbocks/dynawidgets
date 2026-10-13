@@ -58,4 +58,6 @@ You can also visit https://widgets.artur.zone/ for automated conversion.
   - Author: jshields-ca
 - [**Weather with Air Quality and 3-days forecast**](widgets/weather-air-quality-3-day-forecast/widget.md) — Yet another weather widget with air quality and a 3-day forecast.
   - Author: Mayurifag
+- [**WG-EASY CLIENTS**](widgets/wg-easy/widget.md) — Viewing connection status of wg-easy clients
+  - Author: polhaghverdian
 <!-- AUTO-GENERATED:END -->

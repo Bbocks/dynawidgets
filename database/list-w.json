@@ -12,5 +12,12 @@
     "author": "Mayurifag",
     "slug": "weather-air-quality-3-day-forecast",
     "template": "https://raw.githubusercontent.com/Panonim/dynawidgets/refs/heads/main/widgets/weather-air-quality-3-day-forecast/template.txt"
+  },
+  {
+    "title": "WG-EASY CLIENTS",
+    "description": "Viewing connection status of wg-easy clients",
+    "author": "polhaghverdian",
+    "slug": "wg-easy",
+    "template": "https://raw.githubusercontent.com/Panonim/dynawidgets/refs/heads/main/widgets/wg-easy/template.txt"
   }
 ]
